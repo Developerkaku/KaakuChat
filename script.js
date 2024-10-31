@@ -3,14 +3,13 @@ const iframe = document.getElementById("iframe");
 const loaderStatus = document.getElementById("loader-status");
 const note = document.getElementById("note");
 const percentageText = document.getElementById("percentage-text");
-alert(iframe+' '+loaderStatus+' '+note+' '+percentageText);
 
 let dynamicLoadStep = Math.floor(Math.random() * (70 - 30 + 1)) + 30;
 let dynamicDuration = Math.floor(Math.random() * (7 - 1 + 1)) + 1;
 root.style.setProperty('--dynamicLoadStep', `${dynamicLoadStep}vw`);
 loaderStatus.style.animation = `loadStart ${dynamicDuration}s ease-out forwards`;
 loaderStatus.style.animationDelay = '1s';
-alert("loading start");
+
 // Display percentage dynamically
 
 // function timeOut() {
@@ -35,7 +34,6 @@ const element = document.querySelector('#loader-status');
 
 // Create a new ResizeObserver
 const resizeObserver = new ResizeObserver(entries => {
-    alert("resizing start");
     for (let entry of entries) {
         // Check the width of the element
         const newWidth = entry.contentRect.width;
