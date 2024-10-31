@@ -65,6 +65,6 @@ iframe.onload = () => {
 
     // redirecting the user to the main page 
     setTimeout(() => {
-        window.location.href = "lanje";
+        window.location.href = "https://kaakuchat.onrender.com/";
     }, 3000)
 }
