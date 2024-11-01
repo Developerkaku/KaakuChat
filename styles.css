@@ -4,6 +4,10 @@
     --dynamicLoadEnd: 100vw;
 }
 
+*{
+    overflow: hidden;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     overflow: hidden;
@@ -19,7 +23,6 @@ iframe {
 
 main {
     height: 96vh;
-    width: 110vw;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,7 +34,6 @@ main {
     height: 100%;
     position: relative;
     display: flex;
-    /* justify-content: center; */
     align-items: center;
     transform-origin: center;
 }
@@ -50,10 +52,12 @@ main {
 }
 
 #note {
-    width: 30vw;
+    min-width: 30vw;
+    /* width: 30vw; */
+    max-width: 40vw;
     margin-right: 2%;
     line-height: 1.4rem;
-    opacity: 0;
+    /* opacity: 0; */
     transition: opacity 1s ease-in-out;
 }
 
@@ -66,11 +70,13 @@ main {
 }
 
 #percentage-text {
-    bottom: 10px;
-    left: 10px;
+    position: absolute;
+    margin-left: .5%;
+    /* bottom: 10px; */
+    /* left: 10px; */
     font-size: 2rem;
     font-weight: bold;
-    color: #ffcc00;
+    color: rgb(255, 254, 254);
 }
 
 @keyframes loadStart {
@@ -90,5 +96,30 @@ main {
 
     100% {
         width: var(--dynamicLoadEnd);
+    }
+}
+
+@media (max-width: 768px) {
+
+    main{
+        height: 90vh;
+    }
+
+    :root{
+        --dynamicLoadStep: 35vw;
+    }
+
+    #note{
+        margin-right: 4%;
+        line-height: normal;
+        font-size: 0.6rem;
+    }
+}
+
+@media (max-width: 426px) {
+    #note{
+        /* background-color: red; */
+        max-width: 0px;
+        min-width: 30vw;
     }
 }

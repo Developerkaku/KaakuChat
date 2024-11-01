@@ -1,10 +1,11 @@
+
 const root = document.documentElement;
 const iframe = document.getElementById("iframe");
 const loaderStatus = document.getElementById("loader-status");
 const note = document.getElementById("note");
 const percentageText = document.getElementById("percentage-text");
 
-let dynamicLoadStep = Math.floor(Math.random() * (70 - 30 + 1)) + 30;
+let dynamicLoadStep = Math.floor(Math.random() * (70 - 35 + 1)) + 30;
 let dynamicDuration = Math.floor(Math.random() * (7 - 1 + 1)) + 1;
 root.style.setProperty('--dynamicLoadStep', `${dynamicLoadStep}vw`);
 loaderStatus.style.animation = `loadStart ${dynamicDuration}s ease-out forwards`;
@@ -31,24 +32,27 @@ loaderStatus.style.animationDelay = '1s';
 // }
 // // displayPercentage();
 const element = document.querySelector('#loader-status');
-
+const loader = document.getElementById("loader");
+let maxWidth = window.getComputedStyle(loader).width.replace("px", "");
+maxWidth = Math.floor(Number(maxWidth));
 // Create a new ResizeObserver
 const resizeObserver = new ResizeObserver(entries => {
     for (let entry of entries) {
         // Check the width of the element
         const newWidth = entry.contentRect.width;
+        percentageText.style.left = `${newWidth}px`;
 
-        currentPercentage = Math.floor((newWidth / window.innerWidth) * 100);
+        currentPercentage = Math.floor((newWidth / maxWidth) * 100);
+        // currentPercentage = Math.floor((newWidth / window.innerWidth) * 100);
         percentageText.textContent = `${currentPercentage}%`;
 
         // Run your code when the width changes
-        console.log("Width changed to:", newWidth, window.innerWidth);
+        console.log("Width changed to:", newWidth, window.getComputedStyle(loader).width);
         // Place any other code you want to run here
     }
 });
 // Start observing the selected element
 resizeObserver.observe(element);
-
 
 // Display note and percentage text after some time
 setTimeout(() => {
