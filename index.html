@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>KaakuChat</title>
+
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--animeHeight: 0px;
+			--radius: 15px;
+			--secondary-color: #4e4e4e;
+			--primary-color: #333;
+			--text-color: #333;
+		}
+
+		body {
+			margin: 0;
+			font-family: 'Poppins', sans-serif;
+			background: linear-gradient(135deg, #f0f2f5, #e0e5ec);
+			color: var(--text-color);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			overflow: hidden;
+		}
+
+		#formContainer {
+			width: 30vw;
+			padding: 2rem;
+			border-radius: var(--radius);
+			background: rgba(255, 255, 255, 0.9);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+			text-align: center;
+		}
+
+		h1 {
+			font-size: 3rem;
+			line-height: 1.8;
+			color: var(--primary-color);
+			margin: 0;
+		}
+
+		.nav {
+			width: 100%;
+			margin-top: 1rem;
+			display: flex;
+			gap: 1rem;
+			justify-content: center;
+		}
+
+		.navElem {
+			width: 6rem;
+			height: 3rem;
+			border: none;
+			border-radius: 20px;
+			background-color: var(--secondary-color);
+			color: white;
+			font-size: 1rem;
+			cursor: pointer;
+			transition: background-color 0.3s ease;
+		}
+
+		.navElem:hover {
+			/* transform: scale(1.05); */
+			background-color: rgba(0, 0, 0, 0.15);
+			color: #333;
+		}
+
+		.roomForm {
+			position: relative;
+			width: 100%;
+			/* height: 0px; */
+			overflow: hidden;
+			display: flex;
+			align-items: center;
+			flex-direction: column;
+			margin-top: 2rem;
+			gap: 1rem;
+		}
+
+		.roomForm>input {
+			width: 80%;
+			height: 3rem;
+			border: 1px solid #ccc;
+			border-radius: 25px;
+			text-align: center;
+			padding: 0 1rem;
+			font-size: 1rem;
+			background: rgba(255, 255, 255, 0.8);
+			transition: all 0.3s ease;
+		}
+
+		.roomForm>input:focus {
+			border: 1px solid var(--primary-color);
+			box-shadow: 0 0 5px var(--primary-color);
+		}
+
+		.error-msg {
+			color: red;
+			font-size: 0.9rem;
+			background: rgba(255, 0, 0, 0.1);
+			padding: 0.5rem;
+			border-radius: 10px;
+			box-shadow: 0 2px 8px rgba(255, 0, 0, 0.2);
+			animation: fadeInError 0.5s ease forwards;
+		}
+
+		@keyframes fadeInError {
+			0% {
+				opacity: 0;
+			}
+
+			100% {
+				opacity: 1;
+			}
+		}
+
+		p {
+			font-size: 0.9rem;
+			color: #666;
+		}
+
+		button[type="submit"] {
+			width: 50%;
+			height: 3rem;
+			border: none;
+			border-radius: 20px;
+			background-color: var(--primary-color);
+			color: white;
+			font-size: 1rem;
+			cursor: pointer;
+			transition: transform 0.2s ease-in-out, background-color 0.3s ease;
+		}
+
+		button[type="submit"]:hover {
+			transform: scale(1.05);
+			background-color: rgba(0, 0, 0, 0.15);
+			color: #333;
+		}
+
+		#appDetails {
+			overflow: hidden;
+			line-height: 1.5;
+			padding: 1rem;
+			color: #555;
+			text-align: center;
+		}
+
+		@keyframes fadeOut_appDetails {
+			0% {
+				height: var(--animeHeight);
+			}
+
+			100% {
+				height: 0px;
+			}
+		}
+
+		/* 
+		@keyframes fadeIn {
+			0% {
+				height: 0px;
+			}
+
+			100% {
+				height: fit-content;
+			}
+		}
+
+		@keyframes fadeOut {
+			0% {
+				height: fit-content;
+			}
+
+			100% {
+				height: 0px;
+			}
+		} */
+
+		@media (max-width: 768px) {
+			#formContainer {
+				width: 70vw;
+			}
+		}
+
+		@media (max-width: 480px) {
+			#formContainer {
+				width: 85vw;
+				padding: 1rem;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<section>
+		<div id="formContainer">
+			<h1>KaakuChat</h1>
+			<div id="appDetails" style="display: block;">
+				<!-- <br> -->
+				Welcome to My First Web App - a dynamic chat application! <br>
+				Users can create or join a room to message with multiple participants. <br>
+				Note: The server is free-tier, which may limit the number of active connections. <br>
+			    <br>Use the options below to create or join a room and start chatting!
+			</div>
+
+			<div class="nav">
+				<button id="create" class="navElem">Create</button>
+				<button id="join" class="navElem">Join</button>
+			</div>
+
+			<form class="roomForm" id="createForm" action="/create" method="post" style="display: none;">
+				<input type="text" id="roomName" placeholder="Room Name" name="roomName" required>
+
+				<div class="error-msg" style="display: none;">Room name already exists, Try adding extra characters</div>
+
+				<input type="password" id="password" placeholder="Password" name="password">
+				<p>Passwords can be left blank, making the room public.</p>
+				<button type="submit">Create</button>
+			</form>
+
+			<form class="roomForm" id="joinForm" action="/join" method="post" style="display: none;">
+				<input type="text" id="joinRoomName" placeholder="Room Name" name="roomName" required>
+
+				<div class="error-msg" style="display: none;">Incorrect room name!</div>
+
+				<input type="password" id="joinPassword" placeholder="Password" name="password">
+
+				<div class="error-msg" style="display: none;">Incorrect password!</div>
+
+				<p>If the room is public, the password can be left blank.</p>
+				<button type="submit">Join</button>
+			</form>
+		</div>
+	</section>
+
+	<script>
+		let detailsVisited = false;
+
+		const appDetails = document.getElementById("appDetails");
+		const createButton = document.getElementById("create");
+		const joinButton = document.getElementById("join");
+		const createForm = document.getElementById("createForm");
+		const joinForm = document.getElementById("joinForm");
+
+		const root = document.documentElement;
+
+		function animateDetails() {
+			return new Promise((resolve) => {
+				let aDH = window.getComputedStyle(appDetails).height;
+				if (aDH === "0px") {
+					resolve();
+					return;
+				}
+				root.style.setProperty('--animeHeight', aDH);
+				appDetails.style.animation = "fadeOut_appDetails 1s ease-in-out forwards";
+
+				setTimeout(() => {
+					appDetails.remove();
+					resolve(); // Resolve the promise after the animation completes
+				}, 1000);
+			});
+		}
+
+		createButton.addEventListener("click", async () => {
+			if (!detailsVisited) {
+				await animateDetails();
+				detailsVisited = true;
+			}
+
+			joinForm.style.display = "none";
+			// joinForm.style.animation = "fadeOut 2s forwards";
+			createForm.style.display = "flex";
+			// createForm.style.animation = "fadeIn 2s forwards";
+			createButton.style.transform = "scale(1.05)";
+			createButton.style.backgroundColor = "rgba(0, 0, 0, 0.15)";
+			createButton.style.color = "#333";
+			joinButton.style.backgroundColor = "var(--secondary-color)";
+			joinButton.style.color = "white";
+		});
+
+		joinButton.addEventListener("click", async () => {
+			if (!detailsVisited) {
+				await animateDetails();
+				detailsVisited = true;
+			}
+
+			console.log("done");
+			createForm.style.display = "none";
+			console.log(createForm.style.display);
+			// createForm.style.animation = "fadeOut 2s forwards";
+			joinForm.style.display = "flex";
+			console.log(joinForm.style.display);
+			// joinForm.style.animation = "fadeIn 2s forwards";
+			joinButton.style.backgroundColor = "rgba(0, 0, 0, 0.15)";
+			joinButton.style.color = "#333";
+			createButton.style.backgroundColor = "var(--secondary-color)";
+			createButton.style.color = "white";
+		});
+	</script>
+</body>
+
+</html>

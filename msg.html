@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Socket.IO chat</title>
+    <style>
+        body {
+            margin: 0;
+            padding-bottom: 3rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        #form {
+            /* background: rgba(167, 41, 41, 0.15); */
+            background: rgba(0, 0, 0, 0.15);
+            padding: 0.25rem;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            height: 3rem;
+            box-sizing: border-box;
+            backdrop-filter: blur(10px);
+        }
+
+        #input {
+            border: none;
+            padding: 0 1rem;
+            flex-grow: 1;
+            border-radius: 2rem;
+            margin: 0.25rem;
+        }
+
+        #input:focus {
+            outline: none;
+        }
+
+        #form>button {
+            background: #333;
+            border: none;
+            padding: 0 1rem;
+            margin: 0.25rem;
+            border-radius: 3px;
+            outline: none;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #messages {
+            list-style-type: none;
+            margin: 0;
+            margin-top: 4rem;
+            padding: 0;
+        }
+
+        #messages>li {
+            position: relative;
+
+            width: fit-content;
+            max-width: 80vw;
+            word-wrap: break-word;
+            padding: 0.2rem 1rem;
+            margin: 1rem;
+            border-radius: 1rem;
+            background-color: #efefef;
+        }
+
+        #messages>li.you {
+            left: 100%;
+            transform: translateX(-150%);
+        }
+
+        #messages>li.serverExtras {
+            width: fit-content;
+            height: fit-content;
+            margin: auto;
+            background-color: #fff;
+        }
+
+        span {
+            font-weight: bold;
+            font-size: .9rem;
+        }
+
+        span.msgBoxStart {
+            width: 1.2rem;
+            height: .9rem;
+            position: absolute;
+            right: 100%;
+            top: 0;
+            border-top-left-radius: .3rem;
+            border-bottom-left-radius: 100%;
+            transform: translateX(75%);
+            background-color: #efefef;
+        }
+
+        #messages>li.you>span.msgBoxStart {
+            /* right: 0; */
+            left: 100%;
+            transform: translateX(-75%);
+            border-top-left-radius: 0;
+            border-top-right-radius: .3rem;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <ul id="messages">
+        <!-- <li> <span class="msgBoxStart"></span> <span>as</span> <br> asdasasd</li>
+        <li class="serverExtras">girl has joined the chat</li>
+        <li class="serverExtras">someone is typing ...</li>
+        <li> <span class="msgBoxStart"></span> <span>as</span> <br> asdasasd</li>
+        <li> <span class="msgBoxStart"></span> <span>as</span> <br> asdasasd</li>
+        <li class="serverExtras">boy has joined the chat</li>
+        <li class="you"> <span class="msgBoxStart"></span> <span>as</span> <br> asdasasd</li>
+        <li class="serverExtras">someone is typing ...</li>
+        <li> <span class="msgBoxStart"></span> <span>as</span> <br> asdasasd</li> -->
+    </ul>
+    <form id="form" action="">
+        <input id="input" autocomplete="off" />
+        <button>Send</button>
+        <button id="toggle-btn">Disconnect</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+
+        const toggleButton = document.getElementById('toggle-btn');
+
+        toggleButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (socket.connected) {
+                toggleButton.innerText = 'Connect';
+                socket.disconnect();
+                let disconn = confirm("Are you sure you wanna disconnect from the room and the server");
+                if(disconn){
+                    let dissLocation = window.location.href.split("/create")[0];
+                    if(dissLocation){
+                        window.location.href = dissLocation;
+                    } else {
+                        window.location.href = window.location.href.split("/join")[0];
+                    }
+                    // alert("dengey bey !");
+                }
+                                                                // alert(socket.auth.serverOffset)
+            } else {
+                toggleButton.innerText = 'Disconnect';
+                socket.connect();                                  // alert(socket.auth.serverOffset)
+            }
+        });
+
+        const socket = io({
+            auth: {
+                serverOffset: 0,
+                userName: getUserName(),
+                roomName: "emledu",
+                password: "emledu"
+            }
+        });
+
+        function getUserName(){
+            let userName;
+
+            do{
+                userName = prompt("Type your username: ").trim();
+
+                if(!userName){
+                    alert("The username must contain atleast one character");
+                }
+            } while (!userName);
+
+            return userName;
+        }
+
+        const form = document.getElementById("form");
+        const input = document.getElementById("input");
+        const messages = document.getElementById("messages");
+
+        //event listner on the form to submit the message
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            if (input.value) {
+                socket.emit('chat message', input.value);
+                input.value = "";
+            }
+
+            socket.emit('typingEvent', 'stopped');
+        });
+
+        //emitting to the server that user `name` connected
+        if (socket.auth.userName) {
+            alert("Your Username : " + socket.auth.userName);
+            socket.emit('joining', socket.auth.userName);
+        }                                                           /// the typing and conn/disconn ( SERVER EXTRAS ) can be grouped into one socket.on
+        //displayin the emitted msg about the connections
+        socket.on("connectionMsg", (event, name) => {
+
+            const li = document.createElement("li");
+            li.className = "serverExtras";
+            li.innerHTML = name + " has" + ((event == 'joined') ? " joined" : " left") + " the chat ";
+
+            messages.append(li);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        socket.on("chat message", (id, msg, serverOffset) => {
+            const li = document.createElement("li");
+            
+            const span = document.createElement("span");
+            span.className = "msgBoxStart";
+            li.appendChild(span);
+
+            const name = document.createElement("span");
+            name.innerHTML = id;
+            li.appendChild(name);
+
+            const br = document.createElement("br");
+            li.appendChild(br);
+
+            li.innerHTML += msg;
+            // li.innerHTML += msg;
+
+            messages.append(li);
+            window.scrollTo(0, document.body.scrollHeight);
+
+            socket.auth.serverOffset = serverOffset;
+        })
+        
+        //To let the others know when user is typing
+        input.addEventListener("input", () => {
+            if (input.value) {
+                socket.emit("typingEvent", "typing");
+            }
+        });
+        input.addEventListener("blur", ()=>{
+            socket.emit("typingEvent", "stopped")
+        })
+        //displaying the other user's typing msgs
+        socket.on("typingEvent", (event, name) => {
+            if (event == "stopped") {
+                const item = document.querySelector('[data-id]');
+                item.remove();
+            } else if (!document.querySelector('[data-id]')) {
+                const li = document.createElement("li");
+                li.className = "serverExtras";
+                li.dataset.id = name;
+                li.innerHTML = name + " is typing ...";
+
+                messages.append(li);
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        });
+
+    </script>
+</body>
+
+</html>
