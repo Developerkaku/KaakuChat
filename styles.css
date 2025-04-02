@@ -1,0 +1,125 @@
+:root {
+    --dynamicLoadStep: 60vw;
+    --dynamicLoadStart: 10vw;
+    --dynamicLoadEnd: 100vw;
+}
+
+*{
+    overflow: hidden;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+    background-color: black;
+    /* color: white; */
+}
+
+iframe {
+    position: absolute;
+    width: 0px;
+    height: 0px;
+}
+
+main {
+    height: 96vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#loader {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    transform-origin: center;
+}
+
+#loader-status {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    width: 0vw;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    animation: loadStart 3s ease-out forwards;
+    animation-delay: 1s;
+    position: relative;
+    transition: all 0.5s ease;
+}
+
+#note {
+    min-width: 30vw;
+    /* width: 30vw; */
+    max-width: 40vw;
+    margin-right: 2%;
+    line-height: 1.4rem;
+    /* opacity: 0; */
+    transition: opacity 1s ease-in-out;
+}
+
+#loading-text {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 0.8rem;
+    color: #ccc;
+}
+
+#percentage-text {
+    position: absolute;
+    margin-left: .5%;
+    /* bottom: 10px; */
+    /* left: 10px; */
+    font-size: 2rem;
+    font-weight: bold;
+    color: rgb(255, 254, 254);
+}
+
+@keyframes loadStart {
+    0% {
+        width: 0vw;
+    }
+
+    100% {
+        width: var(--dynamicLoadStep);
+    }
+}
+
+@keyframes loadEnd {
+    0% {
+        width: var(--dynamicLoadStart);
+    }
+
+    100% {
+        width: var(--dynamicLoadEnd);
+    }
+}
+
+@media (max-width: 768px) {
+
+    main{
+        height: 90vh;
+    }
+
+    :root{
+        --dynamicLoadStep: 35vw;
+    }
+
+    #note{
+        margin-right: 4%;
+        line-height: normal;
+        font-size: 0.6rem;
+    }
+}
+
+@media (max-width: 426px) {
+    #note{
+        /* background-color: red; */
+        max-width: 0px;
+        min-width: 30vw;
+    }
+}
